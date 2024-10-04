@@ -26,6 +26,8 @@ class support:
     
     def increase_brightness(self):
         os.system("light -A 10")
+        # op=os.popen("light -A 10").read()
+        # print(op)
     def decrease_bringtness(self):
         os.system("light -U 10")
     def wifi_on(self):
@@ -39,10 +41,27 @@ class support:
         # add function to show wifi list here  # TODO: implement this function
     def increase_volume(self):
         os.system("pactl set-sink-volume @DEFAULT_SINK@ +10%")
+        op=os.popen("pamixer --get-volume").read()
+        os.system(f"notify-send 'vloume level is {op}'")
     def decrease_volume(self):
         os.system("pactl set-sink-volume @DEFAULT_SINK@ -10%")
+        op=os.popen("pamixer --get-volume").read()
+        os.system(f"notify-send 'vloume level is {op}'")
     def mute(self):
         os.system("pactl set-sink-mute @DEFAULT_SINK@ toggle")
+        op=os.popen("pamixer --get-mute").read()
+        if op.strip()=="true":
+            os.system('notify-send "muted"')
+        else:
+            os.system('notify-send "unmuted"')
+        # print(op,type(op))
+    def caps_lock(self):
+        os.system("xdotool key Caps_Lock")
+        op=os.popen('''xset q | grep "Caps Lock" | awk '{print ($4 == "on" ? "true" : "false")}' ''').read()
+        if op.strip() == "true":
+            os.system('notify-send "Caps Lock is on"')
+        else:
+            os.system('notify-send "Caps Lock is off"')
 
     def run_root(self):
         self.root.mainloop()
@@ -85,7 +104,7 @@ class support:
         
         label4=Label(text="keyboard")
         label4.grid(row=6,column=0)
-        button13=Button(self.root,text="caps lock")
+        button13=Button(self.root,text="caps lock",command=self.caps_lock)
         button13.grid(row=7,column=0)
         button14=Button(self.root,text="num lock")
         button14.grid(row=7,column=1)
