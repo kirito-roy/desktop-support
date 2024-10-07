@@ -1,7 +1,7 @@
 from tkinter import *
 import os
 from sys import argv
-from style1 import Sbutton
+from style2 import Sbutton
 
 class support:
     
