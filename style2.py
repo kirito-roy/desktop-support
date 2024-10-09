@@ -12,7 +12,7 @@ def Sbutton(root,text,command=none):
                   compound="center",
                   command=command,
                  
-                  foreground="#ffffff",
+                  foreground="#000000",
                   borderwidth="0",
                   relief="flat",
                   overrelief="groove",
