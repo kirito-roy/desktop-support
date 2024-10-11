@@ -1,5 +1,6 @@
 from tkinter import *
 import os
+from functools import partial
 from sys import argv
 from style1 import Sbutton
 
@@ -106,6 +107,36 @@ class support:
         else:
             os.system('notify-send "Scroll Lock is off"')
 
+    def show_vpn_list(self):
+        # Execute the command and get the VPN list
+        vpn_list = os.popen("nmcli -t -f NAME,TYPE connection show | grep vpn | cut -d: -f1").read()
+        vpn_list = vpn_list.strip().split('\n')
+
+        # Print the list (for debugging purposes)
+        print(vpn_list)
+
+        # Loop through each VPN and create a button
+        for vpn_name in vpn_list:
+            b = Sbutton(self.vpn_list, text=vpn_name)
+            
+            # Use partial to pass the correct vpn_name to the command
+            b.config(command=partial(self.select_vpn, vpn_name=vpn_name))
+            b.pack()
+
+        # Optional: Update the button to hide the list (if needed)
+        # self.button6.config(text="hide list", command=self.hide_vpn_list)
+    selected_vpn=""
+    def select_vpn(self, vpn_name):
+        print(vpn_name)
+        self.selected_vpn = vpn_name
+    def connect_vpn(self):
+        if self.selected_vpn!="":
+            os.system(f"nmcli con up {self.selected_vpn}")
+            os.system('notify-send "VPN connected"')
+        else:
+            os.system('notify-send "Please select a VPN"')
+    def disconnect_vpn(self):
+        pass
     def run_root(self):
         self.root.mainloop()
 
@@ -156,12 +187,14 @@ class support:
         button15.grid(row=8,column=2)
         label5=Label(self.frame,text="VPN")
         label5.grid(row=9,column=0)
-        button16=Sbutton(self.frame,text="VPN list")
-        button16.grid(row=10,column=0)
-        button17=Sbutton(self.frame,text="connect VPN")
+        self.button16=Sbutton(self.frame,text="VPN list",command=self.show_vpn_list)
+        self.button16.grid(row=10,column=0)
+        button17=Sbutton(self.frame,text="connect VPN",command=self.connect_vpn)
         button17.grid(row=10,column=1)
         button18=Sbutton(self.frame,text="disconnect VPN")
         button18.grid(row=10,column=2)
+        self.vpn_list=Frame(self.frame,)
+        self.vpn_list.grid(row=11,column=0, columnspan=5, sticky='W')
         label6=Label(self.frame,text="power")
         label6.grid(row=12,column=0)
         button19=Sbutton(self.frame,text="lock screen")
