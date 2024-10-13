@@ -108,6 +108,7 @@ class support:
             os.system('notify-send "Scroll Lock is off"')
 
     def show_vpn_list(self):
+        self.vpn_list.grid(row=11,column=0, columnspan=5, sticky='W')
         # Execute the command and get the VPN list
         vpn_list = os.popen("nmcli -t -f NAME,TYPE connection show | grep vpn | cut -d: -f1").read()
         vpn_list = vpn_list.strip().split('\n')
@@ -124,19 +125,24 @@ class support:
             b.pack()
 
         # Optional: Update the button to hide the list (if needed)
-        # self.button6.config(text="hide list", command=self.hide_vpn_list)
-    selected_vpn=""
+        self.button16.config(text="hide list", command=self.hide_vpn_list)
+    def hide_vpn_list(self):
+        self.button16.config(text="wifi list" , command=self.show_vpn_list)
+        self.vpn_list.grid_forget()
+
+    selected_vpn=list()
     def select_vpn(self, vpn_name):
         print(vpn_name)
-        self.selected_vpn = vpn_name
+        self.selected_vpn.append(vpn_name)
     def connect_vpn(self):
         if self.selected_vpn!="":
-            os.system(f"nmcli con up {self.selected_vpn}")
+            os.system(f"nmcli con up {self.selected_vpn[len(self.selected_vpn)-1]}")
             os.system('notify-send "VPN connected"')
         else:
             os.system('notify-send "Please select a VPN"')
     def disconnect_vpn(self):
-        pass
+        os.system(f"nmcli con down {self.selected_vpn.pop()} ")
+        os.system('notify-send "VPN disconnected"')
     def run_root(self):
         self.root.mainloop()
 
@@ -191,10 +197,9 @@ class support:
         self.button16.grid(row=10,column=0)
         button17=Sbutton(self.frame,text="connect VPN",command=self.connect_vpn)
         button17.grid(row=10,column=1)
-        button18=Sbutton(self.frame,text="disconnect VPN")
+        button18=Sbutton(self.frame,text="disconnect VPN",command=self.disconnect_vpn)
         button18.grid(row=10,column=2)
         self.vpn_list=Frame(self.frame,)
-        self.vpn_list.grid(row=11,column=0, columnspan=5, sticky='W')
         label6=Label(self.frame,text="power")
         label6.grid(row=12,column=0)
         button19=Sbutton(self.frame,text="lock screen")
