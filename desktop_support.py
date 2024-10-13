@@ -3,6 +3,7 @@ import os
 from functools import partial
 from sys import argv
 from style1 import Sbutton
+import functions.power as power
 
 class support:
     
@@ -202,13 +203,13 @@ class support:
         self.vpn_list=Frame(self.frame,)
         label6=Label(self.frame,text="power")
         label6.grid(row=12,column=0)
-        button19=Sbutton(self.frame,text="lock screen")
+        button19=Sbutton(self.frame,text="lock screen",command=power.hibernate)
         button19.grid(row=13,column=0)
-        button20=Sbutton(self.frame,text="logout")
+        button20=Sbutton(self.frame,text="logout",command=power.logout)
         button20.grid(row=13,column=1)
-        button21=Sbutton(self.frame,text="shutdown")
+        button21=Sbutton(self.frame,text="shutdown",command=power.poweroff)
         button21.grid(row=13,column=2)
-        button22=Sbutton(self.frame,text="restart")
+        button22=Sbutton(self.frame,text="restart",command=power.restart)
         button22.grid(row=13,column=3)
 
         
